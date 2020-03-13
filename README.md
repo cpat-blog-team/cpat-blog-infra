@@ -1,1 +1,1 @@
-# Infrastructure files for Cloud Native Sample
+# Infrastructure files for CPAT Blog
