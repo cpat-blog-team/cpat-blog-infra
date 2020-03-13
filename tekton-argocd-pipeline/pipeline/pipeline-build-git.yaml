@@ -16,7 +16,7 @@ spec:
     - name: GIT_MANIFEST_DIR
       type: string
       description: directory with manifests
-      default: yamls/ocp
+      default: cpat-blog-client/yamls
     - name: GIT_EMAIL
       type: string
       description: Email for Git author
@@ -26,7 +26,7 @@ spec:
       description: Name for Git author
       default: Napoleon Santana
   tasks:
-    - name: task
+    - name: build-git
       taskRef:
         name: build-git
       resources:

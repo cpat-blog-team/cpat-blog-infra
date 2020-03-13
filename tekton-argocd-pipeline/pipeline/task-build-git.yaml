@@ -34,6 +34,16 @@ spec:
       - name: image
         type: image
   steps:
+    - name: test-source
+      image: node:10
+      workingDir: /workspace/source
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          npm i 
+          npm test
     - name: build
       image: $(inputs.params.BUILDER_IMAGE)
       workingDir: /workspace/source
