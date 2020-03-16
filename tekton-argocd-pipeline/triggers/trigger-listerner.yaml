@@ -8,7 +8,7 @@ spec:
     - name: cicd-trig
       interceptors:
         - cel:
-            filter: "body.push.ref == 'master'"
+            filter: "body.push.ref == 'test-ci-cd'"
       binding:
         name: binding-cicd
       template:
