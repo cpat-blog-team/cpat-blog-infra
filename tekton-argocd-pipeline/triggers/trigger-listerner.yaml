@@ -9,9 +9,6 @@ spec:
       interceptors:
         - cel:
             filter: "header.match('X-GitHub-Event', 'push')"
-            overlays:
-            - key: extensions.truncated_sha
-              expression: "truncate(body.push.head.sha, 7)"
       binding:
         name: binding-cicd
       template:
