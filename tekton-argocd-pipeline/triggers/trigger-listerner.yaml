@@ -8,7 +8,7 @@ spec:
     - name: cicd-trig
       interceptors:
         - cel:
-            filter: "header.match('X-GitHub-Event', 'push')"
+            filter: "header.match('X-GitHub-Event', 'push') "
       binding:
         name: binding-cicd
       template:
