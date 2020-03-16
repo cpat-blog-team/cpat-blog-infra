@@ -8,7 +8,7 @@ spec:
     - name: cicd-trig
       interceptors:
         - cel:
-            filter: "header.canonical('X-GitHub-Event') == body.pull_request.head.branch"
+            filter: "header.canonical(body.pull_request.head.branch == 'master')"
       binding:
         name: binding-cicd
       template:
