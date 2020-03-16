@@ -6,6 +6,9 @@ spec:
   serviceAccountName: pipeline
   triggers:
     - name: cicd-trig
+      interceptors:
+        - cel:
+            filter: "body.canonical('head_branch') == 'test-ci-cd'"
       binding:
         name: binding-cicd
       template:
