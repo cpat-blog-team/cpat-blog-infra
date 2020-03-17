@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: test
+spec:
+  inputs:
+    resources:
+      - name: source
+        type: git
+  steps:
+    - name: test
+      image: node:10
+      workingDir: /workspace/source
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          npm i 
+          npm test
