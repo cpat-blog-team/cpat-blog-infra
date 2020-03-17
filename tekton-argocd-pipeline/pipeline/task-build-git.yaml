@@ -34,16 +34,6 @@ spec:
       - name: image
         type: image
   steps:
-    - name: test-source
-      image: node:10
-      workingDir: /workspace/source
-      command:
-        - /bin/bash
-      args:
-        - -c
-        - |
-          npm i 
-          npm test
     - name: build
       image: $(inputs.params.BUILDER_IMAGE)
       workingDir: /workspace/source
@@ -71,6 +61,16 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+    - name: test-source
+      image: $(inputs.resources.image.url):latest
+      workingDir: /workspace/source
+      command:
+        - /bin/bash
+      args:
+        - -c
+        - |
+          npm i 
+          npm test
     - name: git-push
       image: $(inputs.params.TOOL_IMAGE)
       env:
