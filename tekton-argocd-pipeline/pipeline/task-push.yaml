@@ -1,0 +1,66 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: push
+spec:
+  inputs:
+    params:
+      - name: GIT_REPOSITORY
+        description: Git repository containing manifest files to update
+      - name: GIT_EMAIL
+        default: pipeline@example.com
+      - name: GIT_NAME
+        default: Pipeline Operator
+      - name: GIT_MANIFEST_DIR
+        default: cpat-blog-client/yamls
+      - name: TOOL_IMAGE
+        default: docker.io/csantanapr/helm-kubectl-curl-git-jq-yq
+  steps:
+    - name: push
+      image: $(inputs.params.TOOL_IMAGE)
+      env:
+        - name: GIT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: git-infra-secret
+              key: username
+              optional: true
+        - name: GIT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: git-infra-secret
+              key: token
+              optional: true
+      command: ["/bin/bash"]
+      args:
+        - -c
+        - |
+          echo Set environment variables
+          export SHORT_GIT_HASH="$(cat .git/FETCH_HEAD | awk '{print substr($1,0,7)}')"
+          export NEW_IMAGE_ID="$(inputs.resources.image.url):$SHORT_GIT_HASH"
+          NEW_IMAGE_ID="$(echo $NEW_IMAGE_ID | sed s/\$NAMESPACE/$NAMESPACE/)"
+          git config --global user.email "$(inputs.params.GIT_EMAIL)"
+          git config --global user.name "$(inputs.params.GIT_NAME)"
+          git clone --branch master --depth 1 https://${GIT_USERNAME}:${GIT_TOKEN}@$(inputs.params.GIT_REPOSITORY) repo
+          cd "repo/$(inputs.params.GIT_MANIFEST_DIR)"
+          ls -l
+          echo old value:
+          cat deployment.yaml | yq r - 'spec.template.spec.containers[0].image'
+          echo replacing with new value:
+          echo $NEW_IMAGE_ID
+          yq w --inplace deployment.yaml 'spec.template.spec.containers[0].image' "$NEW_IMAGE_ID"
+          echo verifying new value
+          yq r deployment.yaml 'spec.template.spec.containers[0].image'
+          if ! git diff-index --quiet HEAD --; then
+            git status
+            git add .
+            git commit -m "deployment updated by tekton pipeline running on $(hostname)"
+            git push
+          else
+              echo "no changes, git repository is up to date"
+          fi
+  volumes:
+    - name: varlibcontainers
+      emptyDir: {}
+    - name: m2-repository
+      emptyDir: {}

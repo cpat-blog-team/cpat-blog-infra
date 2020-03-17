@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1alpha1
 kind: Pipeline
 metadata:
-  name: build-git
+  name: pipeline-blog-client
 spec:
   resources:
     - name: source
@@ -26,15 +26,32 @@ spec:
       description: Name for Git author
       default: Napoleon Santana
   tasks:
-    - name: build-git
+    #This will run the test task
+    - name: test
       taskRef:
-        name: build-git
+        name: test
+      resources:
+        inputs:
+          - name: source
+            resource: source
+    #This will run the build task
+    - name: build
+      taskRef:
+        name: build
+      runAfter:
+        - "test"
       resources:
         inputs:
           - name: source
             resource: source
           - name: image
             resource: image
+    #This will run the push task
+    - name: push
+      taskRef:
+        name: push
+      runAfter:
+        - "build"
       params:
         - name: GIT_REPOSITORY
           value: "$(params.GIT_REPOSITORY)"

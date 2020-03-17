@@ -13,10 +13,10 @@ spec:
     - apiVersion: tekton.dev/v1alpha1
       kind: PipelineRun
       metadata:
-        generateName: cicd-run-
+        generateName: cicd-blog-client-
       spec:
         pipelineRef:
-          name: build-git
+          name: pipeline-blog-client
         resources:
           - name: image
             resourceRef:
