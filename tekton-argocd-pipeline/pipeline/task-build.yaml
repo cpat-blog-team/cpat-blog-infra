@@ -10,7 +10,6 @@ spec:
         default: quay.io/buildah/stable:v1.11.0
       - name: DOCKERFILE
         description: Path to the Dockerfile to build.
-        #CHANGE THIS BACK TO Dockerfile if we want
         default: ./dockerfile
       - name: CONTEXT
         description: Path to the directory to use as context.

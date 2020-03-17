@@ -41,7 +41,7 @@ spec:
         - -c
         - |
           set -e
-          SHORT_GIT_HASH="$(cat .git/FETCH_HEAD | awk '{print substr($1,0,7)}')"
+          SHORT_GIT_HASH="$(cat /workspace/source/.git/FETCH_HEAD | awk '{print substr($1,0,7)}')"
           NEW_IMAGE_ID="$(inputs.resources.image.url):$SHORT_GIT_HASH"
           NEW_IMAGE_ID="$(echo $NEW_IMAGE_ID | sed s/\$NAMESPACE/$NAMESPACE/)"
           git config --global user.email "$(inputs.params.GIT_EMAIL)"
