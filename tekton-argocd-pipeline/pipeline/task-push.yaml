@@ -15,6 +15,11 @@ spec:
         default: cpat-blog-client/yamls
       - name: TOOL_IMAGE
         default: docker.io/csantanapr/helm-kubectl-curl-git-jq-yq
+    resources:
+      - name: source
+        type: git
+      - name: image
+        type: image
   steps:
     - name: push
       image: $(inputs.params.TOOL_IMAGE)
@@ -35,10 +40,10 @@ spec:
       args:
         - -c
         - |
-          echo Set environment variables
-          export SHORT_GIT_HASH="$(cat .git/FETCH_HEAD | awk '{print substr($1,0,7)}')"
-          export NEW_IMAGE_ID="$(inputs.resources.image.url):$SHORT_GIT_HASH"
-          export NEW_IMAGE_ID="$(echo $NEW_IMAGE_ID | sed s/\$NAMESPACE/$NAMESPACE/)"
+          set -e
+          SHORT_GIT_HASH="$(cat .git/FETCH_HEAD | awk '{print substr($1,0,7)}')"
+          NEW_IMAGE_ID="$(inputs.resources.image.url):$SHORT_GIT_HASH"
+          NEW_IMAGE_ID="$(echo $NEW_IMAGE_ID | sed s/\$NAMESPACE/$NAMESPACE/)"
           git config --global user.email "$(inputs.params.GIT_EMAIL)"
           git config --global user.name "$(inputs.params.GIT_NAME)"
           git clone --branch master --depth 1 https://${GIT_USERNAME}:${GIT_TOKEN}@$(inputs.params.GIT_REPOSITORY) repo

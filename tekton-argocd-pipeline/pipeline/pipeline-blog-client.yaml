@@ -52,6 +52,12 @@ spec:
         name: push
       runAfter:
         - "build"
+      resources:
+        inputs:
+          - name: source
+            resource: source
+          - name: image
+            resource: image
       params:
         - name: GIT_REPOSITORY
           value: "$(params.GIT_REPOSITORY)"

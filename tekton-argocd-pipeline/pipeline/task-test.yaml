@@ -11,8 +11,7 @@ spec:
     - name: test
       image: node:10
       workingDir: /workspace/source
-      command:
-        - /bin/bash
+      command: ["/bin/bash"]
       args:
         - -c
         - |
