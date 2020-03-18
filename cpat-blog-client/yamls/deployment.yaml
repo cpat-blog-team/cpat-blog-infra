@@ -23,7 +23,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: image-registry.openshift-image-registry.svc:5000/cpat-blog/cpat-blog-client:f062f29
+      - image: image-registry.openshift-image-registry.svc:5000/cpat-blog/cpat-blog-client:c86682d
         envFrom:
         - secretRef:
             name: cpat-blog-secrets
