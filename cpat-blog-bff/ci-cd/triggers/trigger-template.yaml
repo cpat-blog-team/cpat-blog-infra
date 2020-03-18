@@ -1,0 +1,31 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: template-bff-cicd
+spec:
+  params:
+    - name: gitrevision
+      description: The git revision
+      default: master
+    - name: gitrepositoryurl
+      description: The git repository url
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: PipelineRun
+      metadata:
+        generateName: cicd-bff-client-
+      spec:
+        pipelineRef:
+          name: pipeline-cpat-blog-bff
+        resources:
+          - name: image
+            resourceRef:
+              name: image
+          - name: source
+            resourceSpec:
+              type: git
+              params:
+                - name: revision
+                  value: $(params.gitrevision)
+                - name: url
+                  value: $(params.gitrepositoryurl)

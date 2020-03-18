@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: el-bff-cicd
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - name: trig-bff-cicd
+      binding:
+        name: binding-bff-cicd
+      template:
+        name: template-bff-cicd
