@@ -7,7 +7,7 @@ spec:
     params:
       - name: BUILDER_IMAGE
         description: The location of the buildah builder image.
-        default: quay.io/buildah/stable:v1.11.0
+        default: docker.io/popcor255/buildah-git:v0.1.0
       - name: DOCKERFILE
         description: Path to the Dockerfile to build.
         default: ./dockerfile
@@ -31,15 +31,29 @@ spec:
         - -c
         - |
           set -e
-          SHORT_GIT_HASH="$(cat .git/FETCH_HEAD | awk '{print substr($1,0,7)}')"
-          NEW_IMAGE_ID="$(inputs.resources.image.url):$SHORT_GIT_HASH"
-          NEW_IMAGE_ID="$(echo $NEW_IMAGE_ID | sed s/\$NAMESPACE/$NAMESPACE/)"
-          echo "SHORT_GIT_HASH = $SHORT_GIT_HASH"
-          echo "Building Image $NEW_IMAGE_ID"
-          buildah bud --tls-verify="$(inputs.params.TLSVERIFY)" --layers -f "$(inputs.params.DOCKERFILE)" -t "$NEW_IMAGE_ID" "$(inputs.params.CONTEXT)"
-          echo "Pushing Image $NEW_IMAGE_ID"
-          buildah push --tls-verify="$(inputs.params.TLSVERIFY)" "$NEW_IMAGE_ID" "docker://$NEW_IMAGE_ID"
-          echo "NEW_IMAGE_ID=$NEW_IMAGE_ID" >> /workspace/env-config
+          mkdir ../copy
+          git clone https://github.com/cpat-blog-team/blog-client ../copy
+          cd ../copy/
+          git checkout master
+          MASTER_HASH="$(git rev-parse HEAD)"
+          cd /workspace/source
+          REPO_HASH="$(git rev-parse HEAD)"
+          echo "$MASTER_HASH = $REPO_HASH"
+          if [ "$REPO_HASH" = "$MASTER_HASH" ]
+          then 
+            SHORT_GIT_HASH="$(cat .git/FETCH_HEAD | awk '{print substr($1,0,7)}')"
+            NEW_IMAGE_ID="$(inputs.resources.image.url):$SHORT_GIT_HASH"
+            NEW_IMAGE_ID="$(echo $NEW_IMAGE_ID | sed s/\$NAMESPACE/$NAMESPACE/)"
+            echo "SHORT_GIT_HASH = $SHORT_GIT_HASH"
+            echo "Building Image $NEW_IMAGE_ID"
+            buildah bud --tls-verify="$(inputs.params.TLSVERIFY)" --layers -f "$(inputs.params.DOCKERFILE)" -t "$NEW_IMAGE_ID" "$(inputs.params.CONTEXT)"
+            echo "Pushing Image $NEW_IMAGE_ID"
+            buildah push --tls-verify="$(inputs.params.TLSVERIFY)" "$NEW_IMAGE_ID" "docker://$NEW_IMAGE_ID"
+            echo "NEW_IMAGE_ID=$NEW_IMAGE_ID" >> /workspace/env-config
+          else
+            echo "Error! Can not build image from branch other than master!" >&2
+            exit 1
+          fi
       securityContext:
         privileged: true
       volumeMounts:
