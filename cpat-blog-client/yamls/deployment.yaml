@@ -23,15 +23,15 @@ spec:
         version: v1
     spec:
       containers:
-        - image: image-registry.openshift-image-registry.svc:5000/cpat-blog/cpat-blog-client:fbc26cf
-          envFrom:
-            - secretRef:
-                name: cpat-blog-secrets
-          imagePullPolicy: Always
-          name: ui
-          resources:
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
-          ports:
-            - containerPort: 3001
+      - image: image-registry.openshift-image-registry.svc:5000/cpat-blog/cpat-blog-client:226a4f7
+        envFrom:
+        - secretRef:
+            name: cpat-blog-secrets
+        imagePullPolicy: Always
+        name: ui
+        resources:
+          limits:
+            memory: 128Mi
+            cpu: 500m
+        ports:
+        - containerPort: 3001
