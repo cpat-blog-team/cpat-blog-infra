@@ -7,10 +7,11 @@ spec:
     params:
       - name: GIT_REPOSITORY
         description: Git repository containing manifest files to update
+        default: github.com/cpat-blog-team/cpat-blog-infra
       - name: GIT_EMAIL
-        default: pipeline@example.com
+        default: popcor255@gmail.com
       - name: GIT_NAME
-        default: Pipeline Operator
+        default: popcor255
       - name: GIT_MANIFEST_DIR
         default: cpat-blog-client/yamls
       - name: TOOL_IMAGE
@@ -46,7 +47,7 @@ spec:
           NEW_IMAGE_ID="$(echo $NEW_IMAGE_ID | sed s/\$NAMESPACE/$NAMESPACE/)"
           git config --global user.email "${inputs.params.GIT_EMAIL}"
           git config --global user.name "${inputs.params.GIT_NAME}"
-          git clone --branch master --depth 1 https://${GIT_USERNAME}:${GIT_TOKEN}@${inputs.params.GIT_REPOSITORY} repo
+          git clone --branch master --depth 1 "https://$GIT_USERNAME:$GIT_TOKEN@${inputs.params.GIT_REPOSITORY}" repo
           cd "repo/${inputs.params.GIT_MANIFEST_DIR}"
           ls -l
           echo old value:

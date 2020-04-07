@@ -1,13 +1,32 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
+  annotations:
+    openshift.io/host.generated: 'true'
+  creationTimestamp: '2020-04-07T01:26:29Z'
   labels:
     app: cpat-blog-client
   name: cpat-blog-client
+  namespace: nyc-esther
+  resourceVersion: '7016431'
+  selfLink: /apis/route.openshift.io/v1/namespaces/nyc-esther/routes/cpat-blog-client
+  uid: ce671cc4-786e-11ea-ac6b-b6f5d51e2685
 spec:
+  host: >-
+    cpat-blog-client-nyc-esther.cpat-dev-sandbox-238489-afb9c6047b062b44e3f1b3ecfeba4309-0001.us-south.containers.appdomain.cloud
   port:
     targetPort: http
   to:
     kind: Service
     name: cpat-blog-client
     weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+    - conditions:
+        - lastTransitionTime: '2020-04-07T01:26:29Z'
+          status: 'True'
+          type: Admitted
+      host: >-
+        cpat-blog-client-nyc-esther.cpat-dev-sandbox-238489-afb9c6047b062b44e3f1b3ecfeba4309-0001.us-south.containers.appdomain.cloud
+      routerName: router

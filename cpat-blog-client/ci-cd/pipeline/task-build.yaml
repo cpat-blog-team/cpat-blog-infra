@@ -44,7 +44,8 @@ spec:
             SHORT_GIT_HASH="$(cat .git/FETCH_HEAD | awk '{print substr($1,0,7)}')"
             NEW_IMAGE_ID="${inputs.resources.image.url}:$SHORT_GIT_HASH"
             NEW_IMAGE_ID="$(echo $NEW_IMAGE_ID | sed s/\$NAMESPACE/$NAMESPACE/)"
-            echo "SHORT_GIT_HASH = $SHORT_GIT_HASH"
+            echo "Logging into docker hub because OC3 account service fails to retrieve auth token"
+            buildah login --tls-verify="${inputs.params.TLSVERIFY}" -u $DOCKER_USER_NAME -p $DOCKER_API_TOKEN docker.io
             echo "Building Image $NEW_IMAGE_ID"
             buildah bud --tls-verify="${inputs.params.TLSVERIFY}" --layers -f "${inputs.params.DOCKERFILE}" -t "$NEW_IMAGE_ID" "${inputs.params.CONTEXT}"
             echo "Pushing Image $NEW_IMAGE_ID"
@@ -64,6 +65,18 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: DOCKER_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: docker-hub-secret
+              key: token
+              optional: true
+        - name: DOCKER_USER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: docker-hub-secret
+              key: user
+              optional: true
   volumes:
     - name: varlibcontainers
       emptyDir: {}
