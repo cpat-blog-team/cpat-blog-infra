@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: cpat-blog-client-deployment
+    app: cpat-blog-client
     app.kubernetes.io/component: cpat-blog-client
     app.kubernetes.io/instance: cpat-blog-client
     app.kubernetes.io/name: nodejs
@@ -14,12 +14,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: cpat-blog
+      app: cpat-blog-client
       version: v1
   template:
     metadata:
       labels:
-        app: cpat-blog
+        app: cpat-blog-client
         version: v1
     spec:
       containers:
